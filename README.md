@@ -25,3 +25,4 @@ be found at <https://hexdocs.pm/servy>.
 - in *iex*, if you want to load a module - `c "lib/[module_name]"`
 - You can also just run `iex -S mix` - in the context of our mix project
 - To recompile, in iex `r [module_name]`
+- Think about *transformations* 
