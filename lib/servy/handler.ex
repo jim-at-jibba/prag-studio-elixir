@@ -7,7 +7,6 @@ defmodule Servy.Handler do
   end
 
   def parse(request) do
-    # TODO: Parse the request string into a map:
     # key/value pair
     # key is an atom - a constant whos name is its value
     # first_line = request |> String.split("\n") |> List.first()
@@ -22,18 +21,23 @@ defmodule Servy.Handler do
   end
 
   def route(conv) do
-    # TODO: Create a new map that also has the response body:
-    conv = %{method: "GET", path: "/wildthings", resp_body: "Bears, Lions, Tigers"}
+    # conv = %{method: "GET", path: "/wildthings", resp_body: "Bears, Lions, Tigers"}
+
+    # All data is immutable. When transforming a new version is returned.
+    # Its is common to just reassign the existing variable with the updated values
+
+    # This is very common so there is a shorthand why to do it. Only works on existing properties
+    # conv = Map.put(conv, "resp_body", "Bears, Lions, Tigers")
+    %{conv | resp_body: "Bears, Lions, Tigers"}
   end
 
   def format_response(conv) do
-    # TODO: Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{String.length(conv.resp_body)}
 
-    Bears, Lions, Tigers
+    #{conv.resp_body}
     """
   end
 end
