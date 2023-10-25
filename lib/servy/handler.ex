@@ -1,3 +1,5 @@
+require Logger
+
 defmodule Servy.Handler do
   def handle(request) do
     request
@@ -29,6 +31,10 @@ defmodule Servy.Handler do
     %{conv | path: "wildthings"}
   end
 
+  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
+    %{conv | path: "/bears/#{id}"}
+  end
+
   def rewrite_path(conv), do: conv
 
   # def log(conv) do
@@ -37,7 +43,10 @@ defmodule Servy.Handler do
   # end
 
   # a more concise version of the above code
-  def log(conv), do: IO.inspect(conv)
+  def log(conv) do
+    Logger.info(conv)
+    conv
+  end
 
   def parse(request) do
     # key/value pair
@@ -180,6 +189,17 @@ IO.puts(response)
 
 request = """
 GET /bears/1 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+IO.puts(response)
+
+request = """
+GET /bears?id=2 HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
