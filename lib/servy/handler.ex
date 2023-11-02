@@ -1,5 +1,3 @@
-require Logger
-
 defmodule Servy.Handler do
   @moduledoc """
   Handles HTTP requests
@@ -7,67 +5,19 @@ defmodule Servy.Handler do
   # its also possible to create custom module attributes that act as constants
   @pages_path Path.expand("../../pages", __DIR__)
 
+  import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1]
+  import Servy.Parser, only: [parse: 1]
+
   # This is a module attribute
   @doc "Transforms the request into a response"
   def handle(request) do
     request
     |> parse
-    |> rewrite_path
-    |> log
+    |> rewrite_path()
+    |> log()
     |> route
-    |> track
+    |> track()
     |> format_response
-  end
-
-  def track(%{status: 404, path: path} = conv) do
-    IO.puts("Warning: #{path} is on the loose")
-    conv
-  end
-
-  def track(conv), do: conv
-
-  # when pattern matching maps, you dont need to match all values
-  # but the left handside map must not contain anything the right
-  # hand side does not
-  # conv = %{method: "GET", path: "/wildlife"}
-  # %{path: "/wildlife"} = conv (MATCH)
-  # %{name: "nope", path: "/wildlife"} = conv (NOT MATCH)
-  # %{method: method, path: "/wildlife"} = conv (bind method to method from the conv)
-  # This will only be called if the path pattern matches, we are rewriting the path from
-  # /wildlife to wildthings
-  def rewrite_path(%{path: "/wildlife"} = conv) do
-    %{conv | path: "/wildthings"}
-  end
-
-  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
-    %{conv | path: "/bears/#{id}"}
-  end
-
-  def rewrite_path(conv), do: conv
-
-  # def log(conv) do
-  #   # IO.inspect prints and returns value
-  #   IO.inspect(conv)
-  # end
-
-  # a more concise version of the above code
-  def log(conv) do
-    Logger.info(conv)
-    conv
-  end
-
-  def parse(request) do
-    # key/value pair
-    # key is an atom - a constant whos name is its value
-    # first_line = request |> String.split("\n") |> List.first()
-    # [method, path, _] = String.split(first_line, " ")
-    [method, path, _] =
-      request
-      |> String.split("\n")
-      |> List.first()
-      |> String.split(" ")
-
-    %{method: method, path: path, resp_body: "", status: nil}
   end
 
   # def route(conv) do
