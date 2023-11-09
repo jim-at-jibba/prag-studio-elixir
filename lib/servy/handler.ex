@@ -2,6 +2,7 @@ defmodule Servy.Handler do
   @moduledoc """
   Handles HTTP requests
   """
+  alias Servy.Conv
   # its also possible to create custom module attributes that act as constants
   @pages_path Path.expand("../../pages", __DIR__)
 
@@ -130,7 +131,7 @@ defmodule Servy.Handler do
 
   def format_response(conv) do
     """
-    HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
+    HTTP/1.1 #{Conv.full_status(conv)}
     Content-Type: text/html
     Content-Length: #{String.length(conv.resp_body)}
 
@@ -138,18 +139,6 @@ defmodule Servy.Handler do
     """
   end
 
-  # defp denotes a private function
-  defp status_reason(code) do
-    %{
-      # Because the keys are numbers and not :atoms we need to use =>
-      200 => "OK",
-      201 => "Created",
-      401 => "Unauthorized",
-      403 => "Forbidden",
-      404 => "Not Found",
-      500 => "Internal Server Error"
-    }[code]
-  end
 end
 
 # Elixir herdoc

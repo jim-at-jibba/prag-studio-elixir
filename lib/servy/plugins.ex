@@ -1,12 +1,17 @@
 require Logger
 
 defmodule Servy.Plugins do
-  def track(%{status: 404, path: path} = conv) do
+
+  alias Servy.Conv
+
+  def track(%Conv{status: 404, path: path} = conv) do
     IO.puts("Warning: #{path} is on the loose")
     conv
   end
 
-  def track(conv), do: conv
+  # We dont mind what is in conv but we do care if it is a
+  # Conv struct so matching it into Conv struct
+  def track(%Conv{} = conv), do: conv
 
   # when pattern matching maps, you dont need to match all values
   # but the left handside map must not contain anything the right
@@ -25,7 +30,7 @@ defmodule Servy.Plugins do
     %{conv | path: "/bears/#{id}"}
   end
 
-  def rewrite_path(conv), do: conv
+  def rewrite_path(%Conv{} = conv), do: conv
 
   # def log(conv) do
   #   # IO.inspect prints and returns value
@@ -33,7 +38,7 @@ defmodule Servy.Plugins do
   # end
 
   # a more concise version of the above code
-  def log(conv) do
+  def log(%Conv{} = conv) do
     Logger.info(conv)
     conv
   end

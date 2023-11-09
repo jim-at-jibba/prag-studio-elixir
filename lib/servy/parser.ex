@@ -1,4 +1,8 @@
 defmodule Servy.Parser do
+  # alias syntax
+  # alias Servy.Conv, as: Conv
+  # shorthand - takes the last part as the alias
+  alias Servy.Conv
   def parse(request) do
     # key/value pair
     # key is an atom - a constant whos name is its value
@@ -10,6 +14,6 @@ defmodule Servy.Parser do
       |> List.first()
       |> String.split(" ")
 
-    %{method: method, path: path, resp_body: "", status: nil}
+    %Conv{method: method, path: path}
   end
 end
