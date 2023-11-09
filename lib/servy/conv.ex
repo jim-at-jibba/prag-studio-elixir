@@ -3,10 +3,10 @@
 # A struct is a special kijd of map with fixed properties and defaults
 defmodule Servy.Conv do
   # fieldnames followed by default value
-  defstruct [method: "", path: "", resp_body: "", status: nil]
+  defstruct method: "", path: "", resp_body: "", status: nil, params: %{}
 
   def full_status(conv) do
-   "#{conv.status} #{status_reason(conv.status)}"
+    "#{conv.status} #{status_reason(conv.status)}"
   end
 
   # defp denotes a private function
